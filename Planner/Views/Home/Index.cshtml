@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Planner.Models.Task>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
+
+<style>
+    .card {
+        height: 300px; /* Фіксована висота карток */
+        width:800px;
+    }
+
+    .custom-row {
+        max-width: 2000px; /* Задайте бажану ширину, наприклад, 1200px */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .card{
+        background-color: #2c20869e;
+        color: white;
+        -webkit-box-shadow: 3px 3px 15px 0px rgba(6,24,102,0.32);
+        -moz-box-shadow: 3px 3px 15px 0px rgba(6,24,102,0.32);
+        box-shadow: 3px 3px 15px 0px rgba(6,24,102,0.32);
+    }
+
+    .icon-class {
+        font-size: 10px !important;
+    }
+
+    .swal2-html-container {
+        color: white;
+    }
+
+</style>
+<script>
+    // Отримуємо завдання з найближчим терміном
+    var tasksForTomorrow = @Html.Raw(Json.Serialize(Model
+        .Where(t => t.Deadline.Date >= DateTime.Now.Date  && !t.IsCompleted)
+        .OrderBy(t => (t.Deadline - DateTime.Now).TotalMilliseconds)
+        .FirstOrDefault()));
+
+    // Перевіряємо, чи є завдання для сповіщень
+    if (tasksForTomorrow) {
+        // Формуємо текст сповіщення
+        var message = "Термін виконання " + tasksForTomorrow.name + " наближається";
+
+        // Викликаємо сповіщення SweetAlert
+        Swal.fire({
+            text: message,
+            icon: "info",
+            position: "bottom-end",
+            toast: true,
+            showConfirmButton: false,
+            timer: 5000,
+            background: "#2c20869e",
+            color: "white"
+        });
+    }
+</script>
+
+
+<<div class="row">
+    @foreach (var item in Model)
+    {
+        @if (!item.IsCompleted)
+        {
+            <div class="col-md-6 mb-2">
+                <div class="card" style="width: 25rem;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title" style="white-space: pre-line;">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <p class="card-text" style="white-space: pre-line;">@Html.Raw(item.Description)</p>
+
+                        <div class="mt-auto">
+                            <a type="submit" style="background-color: #566d96; color: white" class="btn" asp-controller="Tasks" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
+                        </div>
+                    </div>
+                </div>
+                <p></p>
+            </div>
+        }
+    }
+</div>
+
+
+

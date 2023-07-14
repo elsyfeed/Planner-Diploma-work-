@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Planner.Models.Task>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    body{
+        width: 100%;
+    }
+</style>
+<link href="~/lib/bootstrap/bootstrap-icons-1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
+<script src="https://kit.fontawesome.com/f896618c8a.js" crossorigin="anonymous"></script>
+
+<div class="tablet" style="right: 400px">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="color:white; margin: 0;">Список завдань</h1>
+        <a type="submit" style="background-color: #566d96; color: white; place-self:end; font-weight: 800; font-size:22px" class="btn" asp-action="Create"><i class="fa-solid fa-plus"></i></a>
+
+    </div>
+    <p></p>
+    @using (Html.BeginForm("Index", "Tasks", FormMethod.Get))
+    {
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="form-group">
+                @{
+                    var allNames = ViewBag.AllNames as List<string>;
+                }
+                @Html.DropDownList("filterName", new SelectList(allNames, ViewBag.FilterName), "Усі", new { @class = "form-control", style = "width: 300px;" })
+            </div>
+            <button type="submit" style="background-color: #566d96; color: white" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    }
+</div>
+
+
+<p></p>
+
+<table style="width: 100%" class="table text-white" >
+    <thead>
+        <tr>
+            <th>
+                Завдання
+            </th>
+            <th>
+                Опис
+            </th>
+            <th>
+                Статус
+            </th>
+            <th>
+                Дедлайн
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+                <td>
+                    @{
+                        int maxDescriptionLength = 20; // Максимальна довжина для показу
+                        string description = item.Description;
+                        if (description == null)
+                        {
+                            description = " ";
+                        }
+                        if (description.Length > maxDescriptionLength)
+                        {
+                            description = description.Substring(0, maxDescriptionLength) + "...";
+                        }
+                    }
+                    @Html.DisplayFor(modelItem => description)
+                </td>
+                <td>
+                    @if (item.IsCompleted)
+                    {
+                        <input class="form-check-input" type="checkbox"  checked />
+                    }
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" disabled />
+                    }
+                </td>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deadline)
+                </td>
+                <td>
+                    <a type="submit" style="background-color: #566d96; color: white" class="btn" asp-action="Edit" asp-route-id="@item.Id">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a> |
+                    <a type="submit" style="background-color: #566d96; color: white" class="btn" asp-action="Details" asp-route-id="@item.Id">
+                        <i class="fa-solid fa-info"></i>
+                    </a> |
+                    <a type="submit" style="background-color: #566d96; color: white" class="btn" asp-action="Delete" asp-route-id="@item.Id">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+
+        </tr>
+}
+    </tbody>
+</table>

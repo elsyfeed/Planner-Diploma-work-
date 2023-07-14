@@ -1,0 +1,58 @@
+﻿@model Planner.Models.Task
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<style>
+    *{
+        color:white;
+    }
+
+    .check-box {
+        width: 28px;
+        height: 28px;
+    }
+
+</style>
+
+<h1 style="margin-top:5%">Видалення</h1>
+<p></p>
+<h3>Ви впевнені що хочете це видалити?</h3>
+<p></p>
+
+<div style="font-size:28px; margin-top: 6%;" >
+    <h4 style="text-align: center"> @Html.DisplayFor(model => model.Name)</h4>
+    <hr />
+    <dl class="row" style="white-space: pre-line;">
+        <dt class = "col-sm-3">
+            Опис
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-3">
+            Статус виконання
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.IsCompleted)
+        </dd>
+        <dt class = "col-sm-3">
+            Обліковий запис
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+
+        <form class="form-group" style="display: flex; justify-content: space-between; align-items: center;" asp-action="Delete">
+        <a asp-action="Index" type="submit" class="btn" style="background-color: #566d96; color: white; width: 40%;">Список завдань</a>
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" style="width: 40%;" value="Видалити запис" class="btn btn-danger" />
+
+        </form>
+      
+        
+
+
+</div>

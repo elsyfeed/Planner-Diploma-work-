@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Planner.Models.Task>
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/uk.js'></script>
+
+    <style>
+        #calendar .fc-prev-button {
+            background-color: #5e77a9;
+            border-color: #171337;
+        }
+
+        #calendar .fc-next-button {
+            background-color: #5e77a9;
+            border-color: #171337;
+        }
+
+        #calendar .fc-today-button {
+            background-color: #5e77a9;
+            border-color: #171337;
+        }
+        .fc-toolbar-title {
+            color: white; 
+        }
+        /* Стилізація календаря */
+        #calendar {
+            margin: 0 auto;
+        }
+
+        #calendar .fc-view{
+                background-color: #2c20869e;
+        }
+
+        /* Стилізація подій */
+        .fc-event {
+            background-color: #000051;
+            color: #ffffff; /* Білий колір тексту подій */
+            font-size: 14px; /* Зменшення розміру шрифту */
+            overflow: hidden;
+            word-wrap: break-word; /* Дозвіл перенесення тексту */
+            text-overflow: ellipsis;
+        }
+
+            .fc-event .fc-event-title {
+                white-space: normal; /* Дозволяє перенесення тексту */
+                text-overflow: ellipsis; /* Перенесення тексту, якщо досягає межі події */
+                overflow: hidden; /* Заборона виходу тексту за межі події */
+                line-height: 1.2; /* Зменшення міжрядкового інтервалу */
+            }
+    </style>
+    <script>
+
+        var model = @Html.Raw(Json.Serialize(Model));
+        var events = [];
+
+        for (var i = 0; i < model.length; i++) {
+            var item = model[i];
+            var event = {
+                title: item.name,
+                start: item.deadline,
+                end: item.deadline,
+                extendedProps: {
+                    eventId: item.id // Додайте ID події як власну властивість
+                },
+                html: '<a href="' + generateEventUrl(item.id) + '">Посилання</a>'
+            };
+            events.push(event);
+            console.log(event);
+
+        }
+        function generateEventUrl(eventId) {
+            // Генерувати посилання в контролері за допомогою хелпера asp-action та asp-route-id
+            var url = '@Url.Action("Details", "Event", new { id = "__eventId__" })';
+            return url.replace('__eventId__', eventId);
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'uk',
+                buttonText: {
+                    today: 'Сьогодні' // Замінити текст кнопки "Today" на "Сьогодні"
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                },
+                events: events,
+                eventDidMount: function (info) {
+                    var eventElement = info.el;
+                    var eventId = info.event.extendedProps.eventId;
+                    eventElement.classList.add('event-link');
+                    eventElement.addEventListener('click', function () {
+                        window.location.href = '/Tasks/Details/' + eventId;
+                    });
+                }
+            });
+            calendar.render();
+        });
+    </script>
+
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+
+
+</html>
