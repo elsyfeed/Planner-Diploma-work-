@@ -16,7 +16,7 @@ With its help, you can make a schedule, set goals, track progress and plan your 
 <li>JavaScript  </li>
 </ul>
 
-###Usage
+### Usage
 1. Firstly you need to ragister/authorize to system
 
 ![зображення](https://github.com/elsyfeed/Planner-Diploma-work-/assets/86188173/15ef121b-e55f-426d-ba10-bcbe1a96ef9f)
